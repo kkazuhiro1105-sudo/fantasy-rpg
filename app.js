@@ -8,8 +8,26 @@ const titles=["性別・雰囲気","種族","職業","外見","追加ダイス�
 const $=id=>document.getElementById(id);
 function show(id){["title-screen","creation-screen","complete-screen"].forEach(x=>$(x).classList.toggle("hidden",x!==id))}
 function choiceCard(label,desc,selected,click){return `<button class="choice ${selected?"selected":""}" data-choice="${encodeURIComponent(label)}"><strong>${label}</strong>${desc?`<small>${desc}</small>`:""}</button>`}
+
+// 設定に応じて主人公のイラストをリアルタイム生成する機能
+const hairMap={黒:'#29283b',茶:'#80513e',金:'#e8c16c',銀:'#c9c9df',白:'#f0efff',赤:'#b94c62',青:'#547fc5',紫:'#9171bd',桃:'#e7a2c4'};
+const eyeMap={黒:'#39354d',茶:'#98613f',青:'#5799df',緑:'#62aa83',赤:'#ce647b',金:'#d4a747',紫:'#9676d5'};
+const jobMap={戦士:'#5279b7',騎士:'#879dbd',狂戦士:'#a94e60',盗賊:'#56617d',レンジャー:'#648b75',暗殺者:'#42445f',魔法使い:'#8268bd',僧侶:'#d1b66f',賢者:'#568fae',召喚士:'#8768b6',魔法剣士:'#536bb0',錬金術師:'#4e9b91'};
+function avatarSVG(){
+ const a=state.appearance, hair=hairMap[a.髪色]||'#29283b', eye=eyeMap[a.瞳]||'#5799df', coat=jobMap[state.job]||'#5279b7';
+ const beast=state.species==='獣人', elf=['エルフ','ダークエルフ'].includes(state.species), dragon=state.species==='竜人', demon=state.species==='魔族', wing=state.species==='天翼族';
+ const ear=beast?`<path d="M125 160L91 72 165 126M275 160L309 72 235 126" fill="${hair}" stroke="#655c86" stroke-width="6"/><path d="M126 137l-19-48 43 42m124 6 19-48-43 42" fill="#edbdcf"/>`:elf?'<path d="M125 176L65 130l68 18m142 28 60-46-68 18" fill="#f3c9c9" stroke="#b98fa8" stroke-width="4"/>':dragon?'<path d="M130 145L98 83l66 44m106 18 32-62-66 44" fill="#9aa6c8" stroke="#596a98" stroke-width="5"/>':demon?'<path d="M151 122L133 48l42 65m74 9 18-74-42 65" fill="#78618e" stroke="#493d69" stroke-width="5"/>':'';
+ const hairBack=a.髪型==='ロング'?'<path d="M100 180Q75 55 200 60Q325 55 300 180L320 430 270 385 130 385 80 430Z"/>':a.髪型==='ポニーテール'?'<path d="M100 180Q75 55 200 60Q325 55 300 180L330 300Q285 280 290 190Z"/>':'<path d="M100 180Q75 55 200 60Q325 55 300 180L280 220Q260 120 200 125Q140 120 120 220Z"/>';
+ const tail=beast?`<path d="M280 410Q375 360 340 295Q325 270 305 300Q345 340 270 375" fill="${hair}" stroke="#655c86" stroke-width="8"/>`:'';
+ const wings=wing?'<path d="M125 330Q10 230 25 370Q60 440 145 405M275 330Q390 230 375 370Q340 440 255 405" fill="#fff" stroke="#c2d3f0" stroke-width="12"/>':'';
+ const skin=a.肌==='褐色'?'#bd806b':a.肌==='色白'?'#fff0ed':'#f2cbbd';
+ const accessory=a.装飾品==='眼鏡'?'<g fill="none" stroke="#53658f" stroke-width="5"><circle cx="160" cy="218" r="29"/><circle cx="240" cy="218" r="29"/><path d="M189 218h22"/></g>':a.装飾品==='髪飾り'?'<path d="M260 105l17-22 17 22-17 22Z" fill="#8cc7ff" stroke="white" stroke-width="3"/>':a.装飾品==='耳飾り'?'<path d="M112 235l-8 32 10 8 10-8m166-32 8 32-10 8-10-8" fill="#f3d27d"/>':'';
+ return `<svg viewBox="0 0 400 560" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="avbg" x2="1" y2="1"><stop stop-color="#c8e2ff"/><stop offset="1" stop-color="#e9ddff"/></linearGradient><linearGradient id="avcoat" x2="1" y2="1"><stop stop-color="${coat}"/><stop offset="1" stop-color="#202d50"/></linearGradient></defs><rect width="400" height="560" fill="url(#avbg)"/><circle cx="310" cy="90" r="65" fill="white" opacity=".3"/>${wings}${tail}<path d="M45 560Q65 380 140 350L200 330 260 350Q335 380 355 560Z" fill="url(#avcoat)"/><path d="M140 350L200 430 260 350 300 560H100Z" fill="#f6f5ff"/><path d="M180 360l20 65 20-65" fill="none" stroke="#d9bd79" stroke-width="7"/><path d="M145 300h110v75q-55 55-110 0Z" fill="${skin}"/>${ear}<path d="M112 165Q115 95 200 95Q285 95 288 165L275 260Q258 316 200 324Q142 316 125 260Z" fill="${skin}" stroke="#d3a9a8" stroke-width="3"/><path d="M145 200q22-18 43 0m24 0q22-18 43 0" fill="none" stroke="#6b5876" stroke-width="7"/><ellipse cx="164" cy="218" rx="13" ry="17" fill="${eye}"/><ellipse cx="236" cy="218" rx="13" ry="17" fill="${eye}"/><circle cx="168" cy="212" r="5" fill="white"/><circle cx="240" cy="212" r="5" fill="white"/><path d="M181 275q19 14 38 0" fill="none" stroke="#b66e7e" stroke-width="4"/>${hairBack.replace('<path d="','<path d="').replace('/>',' fill="'+hair+'" stroke="#655c86" stroke-width="5"/>')}${accessory}<path d="M90 410l55 30-25 120H45Zm220 0-55 30 25 120h75Z" fill="url(#avcoat)"/><path d="M185 448l15 18 15-18-15-24Z" fill="#77c9ff" stroke="white" stroke-width="4"/></svg>`;
+}
+function updateAvatar(){const art=avatarSVG();for(const id of ['hero-avatar','mini-avatar']){const el=document.getElementById(id);if(el)el.innerHTML=art;}}
+
 function render(){
-  show("creation-screen");$("step-count").textContent=`STEP ${state.step+1} / 8`;$("step-caption").textContent=titles[state.step];$("progress-bar").style.width=`${(state.step+1)*12.5}%`;
+  show("creation-screen");updateAvatar();$("step-count").textContent=`STEP ${state.step+1} / 8`;$("step-caption").textContent=titles[state.step];$("progress-bar").style.width=`${(state.step+1)*12.5}%`;
   $("prev-button").disabled=state.step===0;$("prev-button").style.opacity=state.step===0?".35":"1";$("next-button").textContent=state.step===7?"主人公を作成":"次へ";
   let html="";
   if(state.step===0){html=`<h3 class="step-title">主人公の性別と雰囲気</h3><p class="step-description">性別や雰囲気は能力値・戦闘性能に影響しません。</p><h4>性別</h4><div class="choice-grid">${["男性","女性","その他"].map(x=>choiceCard(x,"",state.gender===x)).join("")}</div><h4>雰囲気</h4><div class="choice-grid">${["穏やか","活発","冷静","勇敢","神秘的"].map(x=>choiceCard(x,"",state.mood===x)).join("")}</div>`}
@@ -21,8 +39,11 @@ function render(){
   if(state.step===6){html=`<h3 class="step-title">主人公の名前</h3><p class="step-description">好きな名前を入力してください。16文字まで入力できます。</p><div class="field"><label for="hero-name">主人公名</label><input id="hero-name" maxlength="16" placeholder="名前を入力" value="${escapeHtml(state.name)}"></div>`}
   if(state.step===7){html=`<h3 class="step-title">作成内容の最終確認</h3><p class="step-description">内容を確認し、「主人公を作成」を押してください。</p><div class="summary-grid">${[["名前",state.name],["性別",state.gender],["雰囲気",state.mood],["種族",state.species+(state.species==="獣人"?"（"+state.beast+"）":"")],["職業",state.job],...Object.entries(state.appearance)].map(([k,v])=>`<div class="summary-item"><small>${k}</small><strong>${v}</strong></div>`).join("")}</div><h4>能力値</h4><div class="summary-stats">${ATTRS.map(([a,n])=>`<span>${n}：${state.results?.[a]?.total??"未ロール"}</span>`).join("")}</div>`}
   $("step-content").innerHTML=html;
+  const previewSpecies=$("preview-species"); if(previewSpecies) previewSpecies.textContent=`${state.species}${state.species==="獣人"?"（"+state.beast+"）":""} / ${state.job}`;
+  const previewMood=$("preview-mood"); if(previewMood) previewMood.textContent=`${state.gender}・${state.mood}`;
+  document.querySelectorAll(".step-pills span").forEach((el,i)=>el.classList.toggle("active",(state.step===0?1:state.step===1?0:state.step<=3?2:3)===i));
   $("step-content").querySelectorAll("[data-choice]").forEach(btn=>btn.addEventListener("click",()=>selectChoice(decodeURIComponent(btn.dataset.choice))));
-  $("step-content").querySelectorAll("[data-appearance]").forEach(el=>el.addEventListener("change",()=>state.appearance[el.dataset.appearance]=el.value));
+  $("step-content").querySelectorAll("[data-appearance]").forEach(el=>el.addEventListener("change",()=>{state.appearance[el.dataset.appearance]=el.value;updateAvatar()}));
   $("step-content").querySelectorAll("[data-plus]").forEach(btn=>btn.addEventListener("click",()=>{let a=btn.dataset.plus;if(state.extra[a]<10&&Object.values(state.extra).reduce((x,y)=>x+y,0)<12)state.extra[a]++;render()}));
   $("step-content").querySelectorAll("[data-minus]").forEach(btn=>btn.addEventListener("click",()=>{let a=btn.dataset.minus;if(state.extra[a]>0)state.extra[a]--;render()}));
   const roll=$("roll");if(roll)roll.addEventListener("click",rollStats);

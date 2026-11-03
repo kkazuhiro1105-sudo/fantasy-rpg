@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#111827">
   <title>幻想世界 RPG</title>
   <link rel="stylesheet" href="style.css">
@@ -12,7 +12,7 @@
     <header class="topbar">
       <div class="brand-mark">✦</div>
       <div><p class="eyebrow">FANTASY ROLE-PLAYING GAME</p><h1>幻想世界 RPG</h1></div>
-      <span class="version">BROWSER v0.1</span>
+      <span class="version">BROWSER v0.4</span>
     </header>
     <main>
       <section id="title-screen" class="panel title-screen">
@@ -24,17 +24,15 @@
         <p class="small-note">ブラウザ版の開発初期版です。現在は主人公作成まで遊べます。</p>
       </section>
 
-      <section id="creation-screen" class="panel hidden">
-        <div class="section-heading">
-          <div><p class="eyebrow">CHARACTER CREATION</p><h2>主人公を作成</h2></div>
+      <section id="creation-screen" class="creation-screen hidden">
+        <div class="creation-topbar">
+          <div class="creation-title"><span class="creation-star">✧</span><div><p class="eyebrow">CHARACTER CREATION</p><h2>キャラクター作成</h2><small>あなただけの主人公を作りましょう</small></div></div>
+          <div class="creation-progress"><div class="step-pills"><span class="active">1　種族</span><i>›</i><span>2　性別・雰囲気</span><i>›</i><span>3　外見</span><i>›</i><span>4　確認</span></div><div class="progress-wrap"><div id="progress-bar"></div></div><div class="step-meta"><span id="step-count"></span><span id="step-caption"></span></div></div>
           <button id="back-title" class="quiet">タイトルへ</button>
         </div>
-        <div class="progress-wrap"><div id="progress-bar"></div></div>
-        <div class="step-meta"><span id="step-count"></span><span id="step-caption"></span></div>
-        <div id="step-content"></div>
-        <div class="nav-row">
-          <button id="prev-button" class="secondary">戻る</button>
-          <button id="next-button" class="primary">次へ</button>
+        <div class="creation-layout">
+          <aside class="hero-visual"><div id="hero-avatar" class="avatar-stage" role="img" aria-label="設定に合わせて変化する主人公"></div><div class="hero-visual-caption"><span>YOUR ADVENTURE</span><strong>新しい物語を、ここから。</strong></div></aside>
+          <div class="creation-controls"><div id="step-content"></div><div class="creation-bottom"><div class="mini-preview"><div id="mini-avatar" class="mini-avatar" role="img" aria-label="主人公プレビュー"></div><div><small>現在の設定</small><strong id="preview-species">人間 / 戦士</strong><span id="preview-mood">穏やか</span></div></div><div class="nav-row"><button id="prev-button" class="secondary">戻る</button><button id="next-button" class="primary">次へ　›</button></div></div></div>
         </div>
       </section>
 
@@ -49,7 +47,7 @@
         <p class="small-note">この初期版では主人公作成まで実装しています。召喚・戦闘・冒険は今後追加します。</p>
       </section>
     </main>
-    <footer>Browser RPG Prototype · v0.1</footer>
+    <footer>Browser RPG Prototype · v0.4</footer>
   </div>
   <script src="app.js"></script>
 </body>
